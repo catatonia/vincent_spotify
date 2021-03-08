@@ -9,22 +9,118 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## Let's try to get some of Vincent's playlists!
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+```{r include=FALSE}
+# Imports
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+library(spotifyr)
+library(tidyverse)
+library(spotifyr)
+library(plotly)
+library(compmus)
+library(ggridges)
+library(gridExtra)
 
-```{r cars}
-summary(cars)
+# Color Palettes
+library(wesanderson)
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+```{r}
+# Load data
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+fav_2019 <- get_playlist_audio_features("", "37i9dQZF1EtiJ34DHwvwX5")
+spirit <- get_playlist_audio_features("", "6pJNOxPmQYxFBHrIQNSJZB")
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+# Mutate added_at to only contain year
+
+spirit <- spirit %>%
+  mutate(added_at = as.numeric(format(as.Date(added_at),'%Y')))
+fav_2019 <- fav_2019 %>%
+  mutate(track.album.release_date = as.numeric(format(as.Date(track.album.release_date),'%Y')))
+
+```
+
+
+```{r}
+ggplot_var <- ggplot(data = fav_2019, mapping = aes(x = valence, y = energy, size = track.duration_ms, color = track.album.name)) + 
+  geom_point(aes(alpha = loudness)) +
+  geom_rug(size = 0.1) +
+  theme_classic() + 
+  theme(legend.position="none") +
+
+  labs(                            # Make the titles nice.
+    x = "Valence",
+    y = "Energy") +
+
+  scale_x_continuous(              # Fine-tune the x axis.
+    limits = c(0, 1),
+    breaks = c(0, 0.50, 1),        # Use grid-lines for quadrants only.
+    minor_breaks = NULL            # Remove 'minor' grid-lines.
+  ) +
+  
+  scale_y_continuous(              # Fine-tune the y axis in the same way.
+    limits = c(0, 1),
+    breaks = c(0, 0.50, 1),
+    minor_breaks = NULL
+  ) 
+  
+ggplotly(ggplot_var)
+
+```
+
+```{r}
+ggplot_var <- ggplot(data = spirit, mapping = aes(x = added_at, y = valence, color = mode)) + 
+  geom_point(aes(alpha = loudness)) +
+  theme_classic() + 
+  theme(legend.position="none") +
+
+  labs(                            # Make the titles nice.
+    x = "Year",
+    y = "Valence")
+
+ggplotly(ggplot_var)
+
+```
+```{r}
+plot1 <- ggplot(data = spirit, aes(x = valence, y = factor(added_at), fill =..x..)) + 
+  geom_density_ridges_gradient(size = 0.1) + 
+  scale_fill_gradient(low = "blue", high = "orange") + 
+  theme_ridges() + 
+  theme(panel.background = element_rect(fill = "white")) +
+  theme(plot.background = element_rect(fill = "white")) +
+  theme(legend.position = "none") +
+  theme(axis.text.y = element_text(size=5))+
+  ggtitle("My Own Spirit")+
+
+  labs(x = "Valence", y="Year Added")
+  #+ theme(axis.text.y=element_blank())
+
+plot2 <- ggplot(data = spirit, aes(x = energy, y = factor(added_at), fill =..x..)) + 
+  geom_density_ridges_gradient(size = 0.1) + 
+  scale_fill_gradient(low = "blue", high = "orange") + 
+  theme_ridges() + 
+  theme(panel.background = element_rect(fill = "white")) +
+  theme(plot.background = element_rect(fill = "white")) +
+  theme(legend.position = "none") +
+  theme(axis.text.y = element_text(size=5))+
+  ggtitle("My Own Spirit")+
+
+  labs(x = "Energy", y="Year Added")
+  #+ theme(axis.text.y=element_blank())
+
+
+
+
+
+plot1
+
+plot2
+
+
+```
+
+
