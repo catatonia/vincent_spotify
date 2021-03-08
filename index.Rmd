@@ -1,5 +1,5 @@
 ---
-title: "Vincent Spotify"
+title: "Vincent Spotify <3"
 author: "Céline"
 date: "3/8/2021"
 output: html_document
@@ -8,8 +8,6 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
-## Let's try to get some of Vincent's playlists!
 
 ```{r include=FALSE}
 # Imports
@@ -26,6 +24,7 @@ library(gridExtra)
 library(wesanderson)
 ```
 
+## Let's try to get some of Vincent's awesome playlists! :)
 
 ```{r}
 # Load data
@@ -33,6 +32,8 @@ library(wesanderson)
 fav_2019 <- get_playlist_audio_features("", "37i9dQZF1EtiJ34DHwvwX5")
 spirit <- get_playlist_audio_features("", "6pJNOxPmQYxFBHrIQNSJZB")
 ```
+
+I need to mutate the date values to numerical values so I can use them in the plots.
 
 ```{r}
 # Mutate added_at to only contain year
@@ -46,11 +47,14 @@ fav_2019 <- fav_2019 %>%
 
 
 ```{r}
-ggplot_var <- ggplot(data = fav_2019, mapping = aes(x = valence, y = energy, size = track.duration_ms, color = track.album.name, label=track.name)) + 
+ggplot_var <- ggplot(data = fav_2019, mapping = aes(x = valence, y = energy, size = track.duration_ms, color = key, label=track.name)) + 
   geom_point(aes(alpha = loudness)) +
   geom_rug(size = 0.1) +
   theme_minimal() + 
-  theme(legend.position="none") +
+  #theme(legend.position="none") +
+  #scale_color_viridis_c() +
+  scale_color_gradient(low = "blue", high = "red")+
+  #scale_color_manual(values=wes_palette(name="GrandBudapest1")) + 
 
   labs(                            # Make the titles nice.
     x = "Valence",
@@ -73,7 +77,7 @@ ggplotly(ggplot_var)
 
 ```
 
-```{r}
+```{r }
 ggplot(data = spirit, aes(x = valence, y = factor(added_at), fill =..x..)) + 
   geom_density_ridges_gradient(size = 0.1) + 
   scale_fill_gradient(low = "blue", high = "orange") + 
