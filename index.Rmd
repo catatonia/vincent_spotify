@@ -73,19 +73,6 @@ ggplotly(ggplot_var)
 ```
 
 ```{r}
-ggplot_var <- ggplot(data = spirit, mapping = aes(x = added_at, y = valence, color = mode)) + 
-  geom_point(aes(alpha = loudness)) +
-  theme_classic() + 
-  theme(legend.position="none") +
-
-  labs(                            # Make the titles nice.
-    x = "Year",
-    y = "Valence")
-
-ggplotly(ggplot_var)
-
-```
-```{r}
 plot1 <- ggplot(data = spirit, aes(x = valence, y = factor(added_at), fill =..x..)) + 
   geom_density_ridges_gradient(size = 0.1) + 
   scale_fill_gradient(low = "blue", high = "orange") + 
@@ -122,5 +109,6 @@ plot2
 
 
 ```
+
 
 
