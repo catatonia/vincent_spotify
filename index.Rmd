@@ -46,10 +46,10 @@ fav_2019 <- fav_2019 %>%
 
 
 ```{r}
-ggplot_var <- ggplot(data = fav_2019, mapping = aes(x = valence, y = energy, size = track.duration_ms, color = track.album.name)) + 
+ggplot_var <- ggplot(data = fav_2019, mapping = aes(x = valence, y = energy, size = track.duration_ms, color = track.album.name, label=track.name)) + 
   geom_point(aes(alpha = loudness)) +
   geom_rug(size = 0.1) +
-  theme_classic() + 
+  theme_minimal() + 
   theme(legend.position="none") +
 
   labs(                            # Make the titles nice.
@@ -66,14 +66,15 @@ ggplot_var <- ggplot(data = fav_2019, mapping = aes(x = valence, y = energy, siz
     limits = c(0, 1),
     breaks = c(0, 0.50, 1),
     minor_breaks = NULL
-  ) 
+  ) +
+  ggtitle("Vincent's Favorite Songs of 2019")
   
 ggplotly(ggplot_var)
 
 ```
 
 ```{r}
-plot1 <- ggplot(data = spirit, aes(x = valence, y = factor(added_at), fill =..x..)) + 
+ggplot(data = spirit, aes(x = valence, y = factor(added_at), fill =..x..)) + 
   geom_density_ridges_gradient(size = 0.1) + 
   scale_fill_gradient(low = "blue", high = "orange") + 
   theme_ridges() + 
@@ -82,33 +83,23 @@ plot1 <- ggplot(data = spirit, aes(x = valence, y = factor(added_at), fill =..x.
   theme(legend.position = "none") +
   theme(axis.text.y = element_text(size=5))+
   ggtitle("My Own Spirit")+
-
   labs(x = "Valence", y="Year Added")
-  #+ theme(axis.text.y=element_blank())
 
-plot2 <- ggplot(data = spirit, aes(x = energy, y = factor(added_at), fill =..x..)) + 
-  geom_density_ridges_gradient(size = 0.1) + 
-  scale_fill_gradient(low = "blue", high = "orange") + 
-  theme_ridges() + 
-  theme(panel.background = element_rect(fill = "white")) +
-  theme(plot.background = element_rect(fill = "white")) +
-  theme(legend.position = "none") +
-  theme(axis.text.y = element_text(size=5))+
-  ggtitle("My Own Spirit")+
-
-  labs(x = "Energy", y="Year Added")
-  #+ theme(axis.text.y=element_blank())
-
-
-
-
-
-plot1
-
-plot2
 
 
 ```
 
+```{r}
+ggplot(data = spirit, aes(x = energy, y = factor(added_at), fill =..x..)) + 
+  geom_density_ridges_gradient(size = 0.1) + 
+  scale_fill_gradient(low = "blue", high = "orange") + 
+  theme_ridges() + 
+  theme(panel.background = element_rect(fill = "white")) +
+  theme(plot.background = element_rect(fill = "white")) +
+  theme(legend.position = "none") +
+  theme(axis.text.y = element_text(size=5))+
+  ggtitle("My Own Spirit")+
+  labs(x = "Energy", y="Year Added")
+```
 
 
